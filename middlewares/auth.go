@@ -10,6 +10,7 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 func Authentication() gin.HandlerFunc {
@@ -29,26 +30,7 @@ func Authentication() gin.HandlerFunc {
 	}
 }
 
-func getModel(table string) (interface{}, error) {
-	switch table {
-	case "Photo":
-		return models.Photo{}, nil
-	case "SocialMedia":
-		return models.SocialMedia{}, nil
-	case "Comment":
-		return models.Comment{}, nil
-	default:
-		return nil, fmt.Errorf("Invalid table %s", table)
-	}
-}
-
-func Authorization(table string) gin.HandlerFunc {
-	tables := map[string]interface{}{
-		"Photo":       models.Photo{},
-		"SocialMedia": models.SocialMedia{},
-		"Comment":     models.Comment{},
-	}
-
+func CheckID(table string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		db := database.GetDB()
 		ID, err := strconv.Atoi(c.Param("ID"))
@@ -59,27 +41,26 @@ func Authorization(table string) gin.HandlerFunc {
 			})
 			return
 		}
-		model, ok := tables[table]
-		if !ok {
-			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-				"status":  "Unauthorized",
-				"message": fmt.Sprintf("Invalid table %s", table),
-			})
-			return
-		}
+
 		userData := c.MustGet("userData").(jwt.MapClaims)
 		userID := uint(userData["id"].(float64))
 
-		res := db.Model(model).Select("user_id").First(model, uint(ID))
-
+		var res *gorm.DB
 		var domainUserID uint
-		switch v := model.(type) {
-		case *models.Photo:
-			domainUserID = v.UserID
-		case *models.SocialMedia:
-			domainUserID = v.UserID
-		case *models.Comment:
-			domainUserID = v.UserID
+
+		switch table {
+		case "Photo":
+			domain := models.Photo{}
+			res = db.Select("user_id").First(&domain, uint(ID))
+			domainUserID = domain.UserID
+		case "SocialMedia":
+			domain := models.SocialMedia{}
+			res = db.Select("user_id").First(&domain, uint(ID))
+			domainUserID = domain.UserID
+		case "Comment":
+			domain := models.Comment{}
+			res = db.Select("user_id").First(&domain, uint(ID))
+			domainUserID = domain.UserID
 		}
 
 		if res.RowsAffected == 0 {

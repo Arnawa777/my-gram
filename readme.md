@@ -9,3 +9,10 @@ Auth need to change
 <br> go get golang.org/x/crypto
 <br> go get gorm.io/driver/postgres
 <br> go get gorm.io/gorm
+
+swagger
+<br>\
+go get -u github.com/swaggo/swag/cmd/swag
+go get -u github.com/swaggo/gin-swagger
+go get -u github.com/swaggo/files
+go get -u github.com/alecthomas/template

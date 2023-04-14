@@ -44,14 +44,23 @@ func CreateComment(ctx *gin.Context) {
 	db := database.GetDB()
 	userData := ctx.MustGet("userData").(jwt.MapClaims)
 	comment := models.Comment{}
+	photoID, err := strconv.Atoi(ctx.Param("photoID"))
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"status":  http.StatusText(http.StatusBadRequest),
+			"message": err.Error(),
+		})
+		return
+	}
 
-	err := ctx.ShouldBindJSON(&comment)
+	err = ctx.ShouldBindJSON(&comment)
 	if err != nil {
 		ctx.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
 
 	comment.UserID = uint(userData["id"].(float64))
+	comment.PhotoID = uint(photoID)
 
 	if errs := models.GetValidationErrors(comment); len(errs) > 0 {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"errors": errs})
