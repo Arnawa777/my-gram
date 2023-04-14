@@ -1,5 +1,9 @@
-CRUD API documentation
-When update will automatically assign ID, user_id
+<br> Deploy to railway BUT FAILURE
+<br> Deploynya Server Error kemungkinan karena swagger so nice
+<br> test pakai localhost
+<br> but this was my railway link
+<br>
+https://arnawa-my-gram.up.railway.app/
 
 <br> go get github.com/asaskevich/govalidator
 <br> go get github.com/dgrijalva/jwt-go
