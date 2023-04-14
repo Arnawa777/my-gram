@@ -26,7 +26,7 @@ func main() {
 
 	database.StartDB(&dbConf)
 	// router.New().Run(":3000")
-	router.New().Run(fmt.Sprintf(":%s", port))
+	router.New().Run(fmt.Sprintf("0.0.0.0:%s", port))
 
 	fmt.Println("Starting router on port 3000")
 }
