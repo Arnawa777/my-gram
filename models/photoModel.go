@@ -1,5 +1,6 @@
 package models
 
+// Photo represents the model for an photo
 type Photo struct {
 	GORMModel
 	// gorm.Model

@@ -11,17 +11,47 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func commentMap(comment models.Comment) gin.H {
-	return gin.H{
-		"id":         comment.ID,
-		"user_id":    comment.UserID,
-		"photo_id":   comment.PhotoID,
-		"message":    comment.Message,
-		"created_at": comment.CreatedAt,
-		"updated_at": comment.UpdatedAt,
+// GetAllComment godoc
+// @Summary Get all comments
+// @Description Get details about all comments
+// @Tags json
+// @Accept json
+// @Produce json
+// @Success 200 {object} models.Comment
+// @Router /comments [get]
+func GetAllComment(ctx *gin.Context) {
+	db := database.GetDB()
+	comments := []models.Comment{}
+	ID, err := strconv.Atoi(ctx.Param("ID"))
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"status":  http.StatusText(http.StatusBadRequest),
+			"message": err.Error(),
+		})
+		return
 	}
+
+	result := db.Where("photo_id = ?", ID).Find(&comments)
+	if result.Error != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"status":  http.StatusText(http.StatusInternalServerError),
+			"message": err.Error(),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, comments)
 }
 
+// GetCommentById godoc
+// @Summary Get comment by comment id
+// @Description Get details of specific comment
+// @Tags json
+// @Accept json
+// @Produce json
+// @Param Id path uint true "ID of the comment"
+// @Success 200 {object} models.Comment
+// @Router /comments/{Id} [get]
 func GetCommentById(ctx *gin.Context) {
 	db := database.GetDB()
 	comment := models.Comment{}
@@ -36,10 +66,18 @@ func GetCommentById(ctx *gin.Context) {
 		return
 	}
 
-	output := commentMap(comment)
-	ctx.JSON(http.StatusOK, output)
+	ctx.JSON(http.StatusOK, comment)
 }
 
+// CreateComment godoc
+// @Summary Create comment
+// @Description Create new comment
+// @Tags json
+// @Accept json
+// @Produce json
+// @Param models.Comment body models.Comment true "Create comment"
+// @Success 201 {object} models.Comment
+// @Router /comments [post]
 func CreateComment(ctx *gin.Context) {
 	db := database.GetDB()
 	userData := ctx.MustGet("userData").(jwt.MapClaims)
@@ -73,11 +111,18 @@ func CreateComment(ctx *gin.Context) {
 		return
 	}
 
-	output := commentMap(comment)
-
-	ctx.JSON(http.StatusCreated, output)
+	ctx.JSON(http.StatusCreated, comment)
 }
 
+// UpdateComment godoc
+// @Summary Update comment
+// @Description Update comment data
+// @Tags json
+// @Accept json
+// @Produce json
+// @Param Id path int true "ID of the comment"
+// @Success 200 {object} models.Comment
+// @Router /comments/{Id} [patch]
 func UpdateComment(ctx *gin.Context) {
 	db := database.GetDB()
 	userData := ctx.MustGet("userData").(jwt.MapClaims)
@@ -127,10 +172,18 @@ func UpdateComment(ctx *gin.Context) {
 		return
 	}
 
-	output := commentMap(comment)
-	ctx.JSON(http.StatusOK, output)
+	ctx.JSON(http.StatusOK, comment)
 }
 
+// DeleteComment godoc
+// @Summary Delete comment
+// @Description Delete comment data
+// @Tags json
+// @Accept json
+// @Produce json
+// @Param Id path int true "ID of the comment"
+// @Success 200
+// @Router /comments/{Id} [delete]
 func DeleteComment(ctx *gin.Context) {
 	db := database.GetDB()
 	comment := models.Comment{}
@@ -149,5 +202,8 @@ func DeleteComment(ctx *gin.Context) {
 		return
 	}
 
-	ctx.Status(http.StatusOK)
+	// ctx.Status(http.StatusOK)
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "success to delete comment",
+	})
 }

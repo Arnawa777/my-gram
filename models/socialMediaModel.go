@@ -1,5 +1,6 @@
 package models
 
+// SocialMedia represents the model for an social media
 type SocialMedia struct {
 	GORMModel
 	Name           string `gorm:"not null" json:"name" valid:"required~name is required"`

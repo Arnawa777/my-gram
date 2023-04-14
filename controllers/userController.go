@@ -9,6 +9,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// RegisterUser godoc
+// @Summary Create user
+// @Description Create new user
+// @Tags json
+// @Accept json
+// @Produce json
+// @Param models.User body models.User true "Create User"
+// @Success 201 {object} models.User
+// @Router /users/register [post]
 func RegisterUser(ctx *gin.Context) {
 	db := database.GetDB()
 	user := models.User{}
@@ -39,9 +48,20 @@ func RegisterUser(ctx *gin.Context) {
 		"email":    user.Email,
 		"age":      user.Age,
 	})
-
 }
 
+// LoginUser godoc
+// @Summary Login user
+// @Description Authenticate a user and generate a JWT token
+// @Tags authentication
+// @Accept json
+// @Produce json
+// @Param email body string true "Email address"
+// @Param password body string true "Password"
+// @Success 200 {object} TokenOutput
+// @Failure 400 {object} ErrorOutput
+// @Failure 500 {object} ErrorOutput
+// @Router /users/login [post]
 func LoginUser(ctx *gin.Context) {
 	db := database.GetDB()
 	user := models.User{}
@@ -87,4 +107,13 @@ func LoginUser(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{
 		"token": token,
 	})
+}
+
+type TokenOutput struct {
+	Token string `json:"token"`
+}
+
+type ErrorOutput struct {
+	Status  string `json:"status"`
+	Message string `json:"message"`
 }

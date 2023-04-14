@@ -5,7 +5,23 @@ import (
 	"final-project/middlewares"
 
 	"github.com/gin-gonic/gin"
+
+	_ "final-project/docs"
+
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
+
+// @title My Garm
+// @version 1.0
+// @description Service to manage car data
+// @termsOfService https://google.com
+// @contact.name API Support
+// @contact.email arnawajuan12@mail.com
+// @lisence.name Apache 2.0
+// @lisence.url https://google.com
+// @host localhost:3000
+// @BasePath /
 
 func New() *gin.Engine {
 	r := gin.Default()
@@ -46,6 +62,8 @@ func New() *gin.Engine {
 		sosmedRouter.PUT("/:ID", middlewares.CheckID("SocialMedia"), controllers.UpdateSocialMedia)    //need more authorization
 		sosmedRouter.DELETE("/:ID", middlewares.CheckID("SocialMedia"), controllers.DeleteSocialMedia) //need more authorization
 	}
+
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	return r
 }

@@ -1,5 +1,6 @@
 package models
 
+// Comment represents the model for an comment
 type Comment struct {
 	GORMModel
 	UserID  uint   `gorm:"not null" json:"user_id" valid:"required~user_id is required"`

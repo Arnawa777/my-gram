@@ -1,7 +1,5 @@
 CRUD API documentation
-When update will automatically assign ID, user_id, or photo_id
-
-Auth need to change
+When update will automatically assign ID, user_id
 
 <br> go get github.com/asaskevich/govalidator
 <br> go get github.com/dgrijalva/jwt-go
@@ -11,7 +9,7 @@ Auth need to change
 <br> go get gorm.io/gorm
 
 swagger
-<br>\
+<br>
 go get -u github.com/swaggo/swag/cmd/swag
 go get -u github.com/swaggo/gin-swagger
 go get -u github.com/swaggo/files

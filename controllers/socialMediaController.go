@@ -11,17 +11,25 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func socialMediaMap(socialMedia models.SocialMedia) gin.H {
-	return gin.H{
-		"id":               socialMedia.ID,
-		"name":             socialMedia.Name,
-		"social_media_url": socialMedia.SocialMediaURL,
-		"user_id":          socialMedia.UserID,
-		"created_at":       socialMedia.CreatedAt,
-		"updated_at":       socialMedia.UpdatedAt,
-	}
-}
+// func socialMediaMap(socialMedia models.SocialMedia) gin.H {
+// 	return gin.H{
+// 		"id":               socialMedia.ID,
+// 		"name":             socialMedia.Name,
+// 		"social_media_url": socialMedia.SocialMediaURL,
+// 		"user_id":          socialMedia.UserID,
+// 		"created_at":       socialMedia.CreatedAt,
+// 		"updated_at":       socialMedia.UpdatedAt,
+// 	}
+// }
 
+// GetAllSocilaMedia godoc
+// @Summary Get all social media
+// @Description Get details about all social media
+// @Tags json
+// @Accept json
+// @Produce json
+// @Success 200 {object} models.SocialMedia
+// @Router /social-media [get]
 func GetAllSocilaMedia(ctx *gin.Context) {
 	db := database.GetDB()
 	socialMedia := []models.SocialMedia{}
@@ -36,14 +44,23 @@ func GetAllSocilaMedia(ctx *gin.Context) {
 		return
 	}
 
-	var output []gin.H
-	for _, sosmed := range socialMedia {
-		output = append(output, socialMediaMap(sosmed))
-	}
+	// var output []gin.H
+	// for _, sosmed := range socialMedia {
+	// 	output = append(output, socialMediaMap(sosmed))
+	// }
 
-	ctx.JSON(http.StatusOK, output)
+	ctx.JSON(http.StatusOK, socialMedia)
 }
 
+// GetSocialMediaById godoc
+// @Summary Get social media by social media id
+// @Description Get details of specific social media
+// @Tags json
+// @Accept json
+// @Produce json
+// @Param Id path uint true "ID of the social media"
+// @Success 200 {object} models.SocialMedia
+// @Router /social-media/{Id} [get]
 func GetSocialMediaById(ctx *gin.Context) {
 	db := database.GetDB()
 	sosmed := models.SocialMedia{}
@@ -58,10 +75,19 @@ func GetSocialMediaById(ctx *gin.Context) {
 		return
 	}
 
-	output := socialMediaMap(sosmed)
-	ctx.JSON(http.StatusOK, output)
+	// output := socialMediaMap(sosmed)
+	ctx.JSON(http.StatusOK, sosmed)
 }
 
+// CreateSocialMedia godoc
+// @Summary Create social media
+// @Description Create new social media
+// @Tags json
+// @Accept json
+// @Produce json
+// @Param models.SocialMedia body models.SocialMedia true "Create social media"
+// @Success 201 {object} models.SocialMedia
+// @Router /social-media [post]
 func CreateSocialMedia(ctx *gin.Context) {
 	db := database.GetDB()
 	userData := ctx.MustGet("userData").(jwt.MapClaims)
@@ -86,11 +112,20 @@ func CreateSocialMedia(ctx *gin.Context) {
 		return
 	}
 
-	output := socialMediaMap(sosmed)
+	// output := socialMediaMap(sosmed)
 
-	ctx.JSON(http.StatusCreated, output)
+	ctx.JSON(http.StatusCreated, sosmed)
 }
 
+// UpdateSocialMedia godoc
+// @Summary Update social media
+// @Description Update social media data
+// @Tags json
+// @Accept json
+// @Produce json
+// @Param Id path int true "ID of the social media"
+// @Success 200 {object} models.SocialMedia
+// @Router /social-media/{Id} [patch]
 func UpdateSocialMedia(ctx *gin.Context) {
 	db := database.GetDB()
 	userData := ctx.MustGet("userData").(jwt.MapClaims)
@@ -103,7 +138,7 @@ func UpdateSocialMedia(ctx *gin.Context) {
 	}
 
 	sosmed.UserID = uint(userData["id"].(float64))
-	//just to make output id not 0
+	//just to make sosmed id not 0
 	sosmed.ID = uint(sosmedID)
 
 	// Update sosmed
@@ -126,10 +161,18 @@ func UpdateSocialMedia(ctx *gin.Context) {
 		return
 	}
 
-	output := socialMediaMap(sosmed)
-	ctx.JSON(http.StatusOK, output)
+	ctx.JSON(http.StatusOK, sosmed)
 }
 
+// DeleteSocialMedia godoc
+// @Summary Delete social media
+// @Description Delete social media data
+// @Tags json
+// @Accept json
+// @Produce json
+// @Param Id path int true "ID of the social media"
+// @Success 200
+// @Router /social-media/{Id} [delete]
 func DeleteSocialMedia(ctx *gin.Context) {
 	db := database.GetDB()
 	sosmed := models.SocialMedia{}
@@ -148,5 +191,8 @@ func DeleteSocialMedia(ctx *gin.Context) {
 		return
 	}
 
-	ctx.Status(http.StatusOK)
+	// ctx.Status(http.StatusOK)
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "success to delete social media",
+	})
 }

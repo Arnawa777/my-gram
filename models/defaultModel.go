@@ -6,6 +6,7 @@ import (
 	"github.com/asaskevich/govalidator"
 )
 
+// GORMModel represents the model for an templates
 type GORMModel struct {
 	ID        uint      `gorm:"primaryKey" json:"id"`
 	CreatedAt time.Time `json:"created_at",omitempty`
