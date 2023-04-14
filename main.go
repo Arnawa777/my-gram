@@ -18,11 +18,11 @@ func main() {
 		Name:     os.Getenv("DB_NAME"),
 	}
 
-	port := "3000"
+	// port := "3000"
 
-	if dbConf.Port != "" {
-		port = os.Getenv("DB_PORT")
-	}
+	port := os.Getenv("DB_PORT")
+	// if dbConf.Port != "" {
+	// }
 
 	database.StartDB(&dbConf)
 	// router.New().Run(":3000")
