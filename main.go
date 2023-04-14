@@ -10,15 +10,23 @@ import (
 func main() {
 	fmt.Println("Starting database...")
 
-	// port := "3000"
+	dbConf := database.Database{
+		Host:     os.Getenv("DB_HOST"),
+		Username: os.Getenv("DB_USER"),
+		Password: os.Getenv("DB_PASSWORD"),
+		Port:     os.Getenv("DB_PORT"),
+		Name:     os.Getenv("DB_NAME"),
+	}
 
-	port := os.Getenv("DB_PORT")
-	// if dbConf.Port != "" {
-	// }
+	port := "3000"
 
-	database.StartDB()
+	if dbConf.Port != "" {
+		port = os.Getenv("DB_PORT")
+	}
+
+	database.StartDB(&dbConf)
 	// router.New().Run(":3000")
 	router.New().Run(fmt.Sprintf(":%s", port))
 
-	fmt.Println("Starting router on port")
+	fmt.Println("Starting router on port 3000")
 }
